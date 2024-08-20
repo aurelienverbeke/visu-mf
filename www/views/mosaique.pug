@@ -5,11 +5,16 @@ block content
 		div(class="row align-items-start")
 			div(class="col-2")
 				h3 Légende
-				p(class="mb-0")
-					span(class="me-3")
-						svg(xmlns="http://www.w3.org/2000/svg", width="16", height="16", fill="#abfefd", class="bi bi-square-fill", viewBox="0 0 16 16")
-							path(d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2z")
-					span oula
+				each borne in echelles[type]
+					if borne["bornes"] != "manquant"
+						p(class="mb-0")
+							span(class="me-3")
+								svg(xmlns="http://www.w3.org/2000/svg", width="16", height="16", fill="rgba(" + borne['couleur'][0] + "," + borne['couleur'][1] + "," + borne['couleur'][2] + "," + borne['couleur'][3] + ")", stroke="#000000", class="bi bi-square-fill", viewBox="0 0 16 16")
+									path(d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2z")
+							if borne.hasOwnProperty("commentaire")
+								span= borne["commentaire"]
+							else
+								span= "[ " + borne["bornes"][0] + " ; " + borne["bornes"][1] + " ]"
 			div(class="col-8", id="map")
 			div(class="col-2")
 				h3 Heures
@@ -22,8 +27,7 @@ block content
 							a(class="link-opacity-50-hover heure text-dark heure-non-dispo") #{heure} &#8226
 	
 	script.
-		window.type_mosa = "#{type}";
-		
+		window.type = "#{type}";
 	
 	script(src="/javascripts/bundle.js", type="text/javascript")
 	script(src="/javascripts/charger_images.js", type="text/javascript")

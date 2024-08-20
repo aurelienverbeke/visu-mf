@@ -28,7 +28,7 @@ window.projection = new Projection({ code: "EPSG:3106001" });
 window.map = new Map({
 	target: "map",
 	layers: [ new TileLayer({ source: new OSM(), visible: true, toujoursAfficher: true}) ],
-	view: new View({ center: transform([148847.926, -4294818.338], projection, "EPSG:3857"), zoom: 5.5 })
+	view: new View({ center: transform([148847, -4360000], projection, "EPSG:3857"), zoom: 5.9 })
 });
 
 map.addLayer(
@@ -64,12 +64,12 @@ function ajouter_mosa(heure) {
 	map.addLayer(
 		new ImageLayer({
 			source: new Static({
-				url: "/images/mosaiques/z/" + heure + ".png",
+				url: "/images/mosaiques/" + type + "/" + heure + ".png",
 				imageExtent: [ -619652.074, -5062818.338, 916347.926, -3526818.338 ],
 				projection: projection,
 				interpolate: false
 			}),
-			opacity: 0.5,
+			opacity: 1,
 			visible: false,
 			heure: heure,
 			toujoursAfficher: false

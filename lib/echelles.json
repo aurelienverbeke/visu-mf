@@ -6,7 +6,8 @@
 		},
 		{
 			"bornes": [-41, -39],
-			"couleur": [130, 130, 130, 255]
+			"couleur": [130, 130, 130, 0],
+			"commentaire": "Bruit"
 		},
 		{
 			"bornes": [-35, -12],
@@ -65,11 +66,11 @@
 	"lame_eau": [
 		{
 			"bornes": "manquant",
-			"couleur": [0, 0, 0, 255]
+			"couleur": [0, 0, 0, 0]
 		},
 		{
 			"bornes": [0, 0.01],
-			"couleur": [255, 255, 255, 255]
+			"couleur": [130, 130, 130, 0]
 		},
 		{
 			"bornes": [0.01, 0.02],
