@@ -8,14 +8,6 @@ var logger = require("morgan");
 
 
 
-const Sequelize = require("sequelize");
-
-const sequelize = new Sequelize(`sqlite:${process.env.CHEMIN_BDD}`)
-
-
-
-
-
 var app = express();
 
 
