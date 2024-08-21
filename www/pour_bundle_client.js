@@ -23,6 +23,15 @@ import { transform } from 'ol/proj';
 
 
 
+if(type == "z")
+	document.getElementById("nav-mosa-z").classList.add("active");
+if(type == "lame_eau")
+	document.getElementById("nav-mosa-lame-eau").classList.add("active");
+
+
+
+
+
 proj4.defs("EPSG:3106001", "+title=thomas +proj=stere +lat_0=90 +lat_ts=45 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
 register(proj4);
 window.projection = new Projection({ code: "EPSG:3106001" });
