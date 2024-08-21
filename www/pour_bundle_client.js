@@ -21,6 +21,8 @@ import { transform } from 'ol/proj';
 
 
 
+
+
 proj4.defs("EPSG:3106001", "+title=thomas +proj=stere +lat_0=90 +lat_ts=45 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
 register(proj4);
 window.projection = new Projection({ code: "EPSG:3106001" });
@@ -60,6 +62,48 @@ map.on(
 );
 
 
+
+
+
+for ( let element of document.getElementsByClassName("heure-dispo") ) {
+	let heure = element.id;
+	ajouter_mosa(heure);
+
+	element.addEventListener(
+		"mouseover",
+		(event) => {
+			map.getLayers().forEach((layer) => {
+				if(layer.get("heure") == heure)
+					layer.set("visible", true);
+				else {
+					if(layer.get("toujoursAfficher") == false)
+						layer.set("visible", false);
+				}
+			});
+		}
+	);
+}
+
+for ( let element of document.getElementsByClassName("heure-non-dispo") ) {
+	let heure = element.id;
+
+	element.addEventListener(
+		"mouseover",
+		(event) => {
+			map.getLayers().forEach((layer) => {
+				if(layer.get("toujoursAfficher") == false)
+					layer.set("visible", false);
+				if(layer.get("nom") == "filigrane")
+					layer.set("visible", true);
+			});
+		}
+	);
+}
+
+
+
+
+
 function ajouter_mosa(heure) {
 	map.addLayer(
 		new ImageLayer({
@@ -76,7 +120,5 @@ function ajouter_mosa(heure) {
 		})
 	);
 }
-
-
 
 window.ajouter_mosa = ajouter_mosa;
