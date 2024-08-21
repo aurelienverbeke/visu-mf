@@ -61,11 +61,28 @@ map.on(
 	}
 );
 
+window.ajouter_mosa = (heure) => {
+	map.addLayer(
+		new ImageLayer({
+			source: new Static({
+				url: "/images/mosaiques/" + type + "/" + heure + ".png",
+				imageExtent: [ -619652.074, -5062818.338, 916347.926, -3526818.338 ],
+				projection: projection,
+				interpolate: false
+			}),
+			opacity: 1,
+			visible: false,
+			heure: heure,
+			toujoursAfficher: false
+		})
+	);
+}
 
 
 
 
-for ( let element of document.getElementsByClassName("heure-dispo") ) {
+
+for(let element of document.getElementsByClassName("heure-dispo")) {
 	let heure = element.id;
 	ajouter_mosa(heure);
 
@@ -84,7 +101,7 @@ for ( let element of document.getElementsByClassName("heure-dispo") ) {
 	);
 }
 
-for ( let element of document.getElementsByClassName("heure-non-dispo") ) {
+for(let element of document.getElementsByClassName("heure-non-dispo")) {
 	let heure = element.id;
 
 	element.addEventListener(
@@ -103,22 +120,41 @@ for ( let element of document.getElementsByClassName("heure-non-dispo") ) {
 
 
 
+window.idInterval = undefined;
 
-function ajouter_mosa(heure) {
-	map.addLayer(
-		new ImageLayer({
-			source: new Static({
-				url: "/images/mosaiques/" + type + "/" + heure + ".png",
-				imageExtent: [ -619652.074, -5062818.338, 916347.926, -3526818.338 ],
-				projection: projection,
-				interpolate: false
-			}),
-			opacity: 1,
-			visible: false,
-			heure: heure,
-			toujoursAfficher: false
-		})
-	);
-}
+document.getElementById("bouton-lancer").addEventListener(
+	"mouseup",
+	(event) => {
+		let nombreImagesAnimation = parseInt(document.getElementById("selection-profondeur").value) * 12;
+		
+		let images = Array.from(document.getElementsByClassName("heure"));
+		images = images.slice(images.length-nombreImagesAnimation);
 
-window.ajouter_mosa = ajouter_mosa;
+		var indiceEnCours = nombreImagesAnimation - 1;
+		var indicePrecedent = nombreImagesAnimation - 2;
+		idInterval = setInterval(
+			() => {
+				images[indiceEnCours].dispatchEvent(new MouseEvent("mouseover"));
+				images[indicePrecedent].classList.remove("souligne");
+				images[indiceEnCours].classList.add("souligne");
+				indicePrecedent = indiceEnCours;
+				indiceEnCours++;
+				if(indiceEnCours == nombreImagesAnimation)
+					indiceEnCours = 0;
+			},
+			500
+		);
+	}
+);
+
+document.getElementById("bouton-pause").addEventListener(
+	"mouseup",
+	(event) => {
+		clearInterval(idInterval);
+		idInterval = undefined;
+
+		Array.from(document.getElementsByClassName("heure")).forEach(
+			(elem) => { elem.classList.remove("souligne"); }
+		);
+	}
+);
