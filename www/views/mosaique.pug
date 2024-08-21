@@ -4,7 +4,10 @@ block content
 	div(class="container-fluid")
 		div(class="row align-items-start")
 			div(class="col-2")
-				h3 Légende
+				if type == "z"
+					h3 Légende (dBZ)
+				else
+					h3 Légende (mm)
 				each borne in echelles[type]
 					if borne["bornes"] != "manquant"
 						p(class="mb-0")
@@ -20,7 +23,7 @@ block content
 							if borne.hasOwnProperty("commentaire")
 								span= borne["commentaire"]
 							else
-								span= "[ " + borne["bornes"][0] + " ; " + borne["bornes"][1] + " ]"
+								span= "] " + borne["bornes"][0] + " ; " + borne["bornes"][1] + " ]"
 			div(class="col-8", id="map")
 			div(class="col-2")
 				h3 Heures
