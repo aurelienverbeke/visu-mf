@@ -2,3 +2,4 @@ bin/
 *.bufr.gz
 *.png
 *.swp
+bundle.js
