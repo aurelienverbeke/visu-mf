@@ -8,6 +8,7 @@
 #include <opencv2/imgcodecs.hpp>
 #include "json.hpp"
 #include <fstream>
+#include <cstdio>
 
 namespace fs = std::filesystem;
 using json = nlohmann::json;
@@ -71,7 +72,10 @@ int main(int argc, char *argv[])
 						{
 							if(borne["bornes"] == "manquant")
 							{
-								pixelMatrice = { borne["couleur"][0], borne["couleur"][1], borne["couleur"][2], borne["couleur"][3] };
+								pixelMatrice = { borne["couleur"][2].get<unsigned char>(),
+										borne["couleur"][1].get<unsigned char>(),
+										borne["couleur"][0].get<unsigned char>(),
+										borne["couleur"][3].get<unsigned char>() };
 								break;
 							}
 						}
@@ -80,9 +84,12 @@ int main(int argc, char *argv[])
 					{
 						for(auto borne : echelles["z"])
 						{
-							if(borne["bornes"] != "manquant" && borne["bornes"][0] <= pixel && pixel < borne["bornes"][1])
+							if(borne["bornes"] != "manquant" && borne["bornes"][0].get<double>() < pixel && pixel <= borne["bornes"][1].get<double>())
 							{
-								pixelMatrice = { borne["couleur"][0], borne["couleur"][1], borne["couleur"][2], borne["couleur"][3] };
+								pixelMatrice = { borne["couleur"][2].get<unsigned char>(),
+										borne["couleur"][1].get<unsigned char>(),
+										borne["couleur"][0].get<unsigned char>(),
+										borne["couleur"][3].get<unsigned char>() };
 								break;
 							}
 						}
@@ -124,7 +131,10 @@ int main(int argc, char *argv[])
 						{
 							if(borne["bornes"] == "manquant")
 							{
-								pixelMatrice = { borne["couleur"][0], borne["couleur"][1], borne["couleur"][2], borne["couleur"][3] };
+								pixelMatrice = { borne["couleur"][2].get<unsigned char>(),
+										borne["couleur"][1].get<unsigned char>(),
+										borne["couleur"][0].get<unsigned char>(),
+										borne["couleur"][3].get<unsigned char>() };
 								break;
 							}
 						}
@@ -135,9 +145,12 @@ int main(int argc, char *argv[])
 						
 						for(auto borne : echelles["lame_eau"])
 						{
-							if(borne["bornes"] != "manquant" && borne["bornes"][0] <= pixel && pixel < borne["bornes"][1])
+							if(borne["bornes"] != "manquant" && borne["bornes"][0].get<double>() < pixel && pixel <= borne["bornes"][1].get<double>())
 							{
-								pixelMatrice = { borne["couleur"][0], borne["couleur"][1], borne["couleur"][2], borne["couleur"][3] };
+								pixelMatrice = { borne["couleur"][2].get<unsigned char>(),
+										borne["couleur"][1].get<unsigned char>(),
+										borne["couleur"][0].get<unsigned char>(),
+										borne["couleur"][3].get<unsigned char>() };
 								break;
 							}
 						}
