@@ -39,22 +39,31 @@ block content
 				
 
 				h3(class="mt-4") Couches
-				div(class="list-group")
-					div(class="list-group-item")
-						p(class="mb-0 fw-medium") Fond de carte
-						div(class="d-flex align-items-center")
-							p(class="mb-0 pe-3") Opacité&nbsp;:
-							input(type="range", class="form-range", min="0" max="1", step="0.1", value="0.8")
-					div(class="list-group-item")
-						p(class="mb-0 fw-medium") Image
-						div(class="d-flex align-items-center")
-							p(class="mb-0 pe-3") Opacité&nbsp;:
-							input(type="range", class="form-range", min="0" max="1", step="0.1", value="0.7")
-					div(class="list-group-item")
-						p(class="mb-0 fw-medium") Radars
-						div(class="d-flex align-items-center")
-							p(class="mb-0 pe-3") Opacité&nbsp;:
-							input(type="range", class="form-range", min="0" max="1", step="0.1", value="1")
+				div(class="list-group" id="liste-couches")
+					div(class="list-group-item d-flex align-items-center pe-0" id="couche-fond-carte")
+						div
+							p(class="mb-0 fw-medium") Fond de carte
+							div(class="d-flex align-items-center")
+								p(class="mb-0 pe-3") Opacité&nbsp;:
+								input(type="range", class="form-range", min="0" max="1", step="0.1", value="0.8", id="opacite-fond-carte")
+						div
+							i(class="bi bi-grip-vertical fs-2 ms-3 poignee-couches")
+					div(class="list-group-item d-flex align-items-center pe-0", id="couche-radars")
+						div
+							p(class="mb-0 fw-medium") Radars
+							div(class="d-flex align-items-center")
+								p(class="mb-0 pe-3") Opacité&nbsp;:
+								input(type="range", class="form-range", min="0" max="1", step="0.1", value="1", id="opacite-radars")
+						div
+							i(class="bi bi-grip-vertical fs-2 ms-3 poignee-couches")
+					div(class="list-group-item d-flex align-items-center pe-0", id="couche-image")
+						div
+							p(class="mb-0 fw-medium") Image
+							div(class="d-flex align-items-center")
+								p(class="mb-0 pe-3") Opacité&nbsp;:
+								input(type="range", class="form-range", min="0" max="1", step="0.1", value="0.7", id="opacite-image")
+						div
+							i(class="bi bi-grip-vertical fs-2 ms-3 poignee-couches")
 			
 
 

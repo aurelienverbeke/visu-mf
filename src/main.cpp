@@ -161,9 +161,9 @@ int main(int argc, char *argv[])
 		if(res == 0)
 		{
 			radarsPresents.clear();
-			pixmapLameEau = decodeur.lire_pixmap_lame_eau_code(CUMUL);
+			pixmapLameEau = decodeur.lire_pixmap_lame_eau_code(CUMUL, &radarsPresents);
 
-			radarsPresentsZ[heure] = radarsPresents;
+			radarsPresentsLameEau[heure] = radarsPresents;
 			f.open(std::getenv("CHEMIN_RADARS_PRESENTS_MOSA_LAME_EAU"), std::fstream::out | std::fstream::trunc);
 			if(!f.is_open())
 			{

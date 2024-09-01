@@ -317,10 +317,13 @@ class DecodeurBUFR
 		 *
 		 * @param numeroParametre Parametre voulu
 		 * CUMUL=0 | QUALITE=1
+		 * @param radarsPresents Tableau qui contiendra les numero OMM des radars
+		 * inclus dans la mosaique
 		 *
 		 * @return PixmapValeursEntieres Pixmap correspondante au parametre demande
 		 */
-		PixmapValeursEntieres lire_pixmap_lame_eau_code(const unsigned char & numeroParametre);
+		PixmapValeursEntieres lire_pixmap_lame_eau_code(const unsigned char & numeroParametre,
+						std::vector<unsigned long>* radarsPresents=nullptr);
 
 
 

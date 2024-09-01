@@ -1647,7 +1647,8 @@ PixmapValeursFlottantes DecodeurBUFR::lire_pixmap_zhbas(const unsigned char & nu
 
 
 
-PixmapValeursEntieres DecodeurBUFR::lire_pixmap_lame_eau_code(const unsigned char & numeroParametre)
+PixmapValeursEntieres DecodeurBUFR::lire_pixmap_lame_eau_code(const unsigned char & numeroParametre,
+						std::vector<unsigned long>* radarsPresents)
 {
 	unsigned short nbAzimuts = 0;
 	unsigned short nbPortes = 0;
@@ -1674,6 +1675,10 @@ PixmapValeursEntieres DecodeurBUFR::lire_pixmap_lame_eau_code(const unsigned cha
 	unsigned char nombreDescripteursARepeter = 0;
 
 	unsigned long indiceMax = 0;
+
+	unsigned char numeroBlockOmm = 0;
+	unsigned short numeroStationOmm = 0;
+	bool radarAAjouter = false;
 	
 
 
@@ -1890,9 +1895,32 @@ PixmapValeursEntieres DecodeurBUFR::lire_pixmap_lame_eau_code(const unsigned cha
 								j++;
 							}
 							
+							else if(descripteurs[j] == D(0,1,1)
+									&& radarsPresents!=nullptr)
+							{
+								position += lire_descripteur_section_4<unsigned char>(j,
+											position,
+											&numeroBlockOmm);
+								radarAAjouter = true;
+							}
+							
+							else if(descripteurs[j] == D(0,1,2)
+									&& radarsPresents!=nullptr)
+								position += lire_descripteur_section_4<unsigned short>(j,
+											position,
+											&numeroStationOmm);
+
 							else	
 								position += lire_descripteur_section_4<char>(j,
 											position);
+
+							if(radarAAjouter)
+							{
+								radarsPresents->push_back(
+										numeroBlockOmm*1000
+										+ numeroStationOmm);
+								radarAAjouter = false;
+							}
 						}
 					}
 				}

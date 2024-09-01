@@ -67,7 +67,7 @@ window.projection = new Projection({ code: "EPSG:3106001" });
 window.map = new Map({
 	target: "map",
 	layers: [
-		new TileLayer({ source: new OSM(), visible: true, toujoursAfficher: true, opacity: 0.8 }),
+		new TileLayer({ source: new OSM(), visible: true, toujoursAfficher: true, zIndex: 0, groupe: "fond_carte", nom: "fond_carte"}),
 		new VectorLayer({
 			source: new VectorSource(),
 			style: new Style({
@@ -80,7 +80,9 @@ window.map = new Map({
 			}),
 			visible: true,
 			toujoursAfficher: false,
-			nom: "radars_presents"
+			nom: "radars_presents",
+			groupe: "radars_filigrane",
+			zIndex: 1
 		}),
 		new VectorLayer({
 			source: new VectorSource(),
@@ -94,7 +96,9 @@ window.map = new Map({
 			}),
 			visible: true,
 			toujoursAfficher: false,
-			nom: "radars_absents"
+			nom: "radars_absents",
+			groupe: "radars_filigrane",
+			zIndex: 1
 		})
 	],
 	overlays: [ overlay ],
@@ -126,7 +130,9 @@ map.addLayer(
 		}),
 		toujoursAfficher: false,
 		visible: false,
-		nom: "filigrane"
+		nom: "filigrane",
+		groupe: "radars_filigrane",
+		zIndex: 1
 	})
 );
 
@@ -235,10 +241,12 @@ for(let element of document.getElementsByClassName("heure-dispo")) {
 				projection: projection,
 				interpolate: false
 			}),
-			opacity: 0.7,
 			visible: false,
 			heure: element.id,
-			toujoursAfficher: false
+			toujoursAfficher: false,
+			groupe: "image",
+			zIndex: 2,
+			nom: "image"
 		})
 	);
 
@@ -380,6 +388,89 @@ document.getElementById("vitesse").addEventListener(
 			lancer_animation();
 	}
 );
+
+// initialisation
+mettre_profondeur_personnalise();
+document.getElementById("vitesse").valueAsNumber = 1;
+document.getElementById("selection-fin").selectedIndex = document.getElementsByClassName("heure").length - 1;
+document.getElementById("selection-debut").selectedIndex = 0;
+
+
+
+
+
+/*
+ *
+ * Configuration des couches
+ *
+ */
+
+// ordre
+Sortable.create(document.getElementById("liste-couches"), {
+	handle: ".poignee-couches",
+	animation: 150,
+	onUpdate: (event) => {
+		let ordreCouches = {};
+
+		let listeHtml = document.getElementById("liste-couches").children;
+
+		for(let i=0 ; i<listeHtml.length ; i++) {
+			ordreCouches[listeHtml.item(i).id] = i;
+		}
+
+		map.getLayers().forEach((layer) => {
+			if(layer.get("groupe") == "fond_carte")
+				layer.setZIndex(ordreCouches["couche-fond-carte"]);
+			else if(layer.get("groupe") == "radars_filigrane")
+				layer.setZIndex(ordreCouches["couche-radars"]);
+			else if(layer.get("groupe") == "image")
+				layer.setZIndex(ordreCouches["couche-image"]);
+		});
+	}
+});
+
+// opacite
+document.getElementById("opacite-fond-carte").addEventListener(
+	"input",
+	(event) => {
+		let opacite = document.getElementById("opacite-fond-carte").valueAsNumber;
+
+		map.getLayers().forEach((layer) => {
+			if(layer.get("groupe") == "fond_carte")
+				layer.setOpacity(opacite);
+		});
+	}
+)
+document.getElementById("opacite-fond-carte").valueAsNumber = 0.8;
+document.getElementById("opacite-fond-carte").dispatchEvent(new InputEvent("input"));
+
+document.getElementById("opacite-radars").addEventListener(
+	"input",
+	(event) => {
+		let opacite = document.getElementById("opacite-radars").valueAsNumber;
+
+		map.getLayers().forEach((layer) => {
+			if(layer.get("groupe") == "radars_filigrane" && layer.get("nom") != "filigrane")
+				layer.setOpacity(opacite);
+		});
+	}
+)
+document.getElementById("opacite-radars").valueAsNumber = 1;
+document.getElementById("opacite-radars").dispatchEvent(new InputEvent("input"));
+
+document.getElementById("opacite-image").addEventListener(
+	"input",
+	(event) => {
+		let opacite = document.getElementById("opacite-image").valueAsNumber;
+
+		map.getLayers().forEach((layer) => {
+			if(layer.get("groupe") == "image")
+				layer.setOpacity(opacite);
+		});
+	}
+)
+document.getElementById("opacite-image").valueAsNumber = 0.7;
+document.getElementById("opacite-image").dispatchEvent(new InputEvent("input"));
 
 
 

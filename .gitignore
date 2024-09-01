@@ -2,4 +2,6 @@ bin/
 *.bufr.gz
 *.png
 *.swp
-bundle.js
+bundle_mosa.js
+bundle_obs.js
+radars_presents.json

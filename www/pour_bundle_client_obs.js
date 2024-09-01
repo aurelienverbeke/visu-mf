@@ -14,6 +14,13 @@ import Overlay from 'ol/Overlay.js';
 
 
 
+/*
+ *
+ * Creation de la carte
+ *
+ */
+
+// overlay de detail sur la station
 let overlay = new Overlay({
 	element: document.getElementById("popup"),
 	autoPan: {
@@ -33,11 +40,7 @@ let map = new Map({
 
 map.addControl(new ZoomToExtent({ extent: map.getView().calculateExtent(map.getSize()) }));
 
-
-
-
-
-
+// ajout des stations a la carte
 fetch("/obs/liste-stations")
 	.then((res) => res.json())
 	.then((stations) => {
@@ -50,11 +53,7 @@ fetch("/obs/liste-stations")
 		});
 	});
 
-
-
-
-
-
+// curseur en "petite main" quand on peut cliquer sur la station
 map.on("pointermove", (event) => {
 	if(map.hasFeatureAtPixel(event.pixel))
 		map.getTargetElement().style.cursor = "pointer";
@@ -66,6 +65,11 @@ map.on("pointermove", (event) => {
 
 
 
+/*
+ *
+ * Gestion de l'overlay des stations
+ *
+ */
 
 function fermer_overlay () {
 	overlay.setPosition(undefined);
@@ -86,3 +90,13 @@ map.on("click", (event) => {
 });
 
 boutonFermer.addEventListener( "click", () => { fermer_overlay() });
+
+
+
+
+
+/*
+ *
+ * Recherche d'un lieu
+ *
+ */
