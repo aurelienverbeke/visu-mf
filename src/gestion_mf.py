@@ -14,8 +14,8 @@ def print_json(json_txt):
 
 
 
-# suppression des images datant de plus de 2 heures
-heureMin = (dt.utcnow() - td(hours=2)).strftime("%Y%m%d%H%M")
+# suppression des images datant de plus de la duree selectionnee
+heureMin = (dt.utcnow() - td(hours=int(os.environ["DUREE_CONSERVEE"]))).strftime("%Y%m%d%H%M")
 
 for fichier in os.listdir(os.environ["DIR_IMAGES_MOSA_Z"]):
     if(fichier[:-4] < heureMin):

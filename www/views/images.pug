@@ -1,0 +1,120 @@
+extends layout
+
+block content
+	div(class="container-fluid")
+		div(class="row align-items-start")
+			div(class="col-2")
+				if type == "z"
+					h3 Légende (dBZ)
+				else
+					h3 Légende (mm)
+				each borne in echelles[type]
+					if borne["bornes"] != "manquant"
+						p(class="mb-0")
+							if borne["couleur"][3] == 0
+								svg(class="me-3", width="16", height="16", class="bi bi-x-square", viewBox="0 0 16 16")
+									path(d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z", fill="#000000")
+									path(d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708", fill="#ff0000")
+							else
+								svg(class="me-3", width="16", height="16", fill="rgba(" + borne['couleur'][0] + "," + borne['couleur'][1] + "," + borne['couleur'][2] + "," + borne['couleur'][3] + ")", stroke="#000000", class="bi bi-square-fill", viewBox="0 0 16 16")
+									path(d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2z")
+							if borne.hasOwnProperty("commentaire")
+								span= borne["commentaire"]
+							else
+								span= "] " + borne["bornes"][0] + " ; " + borne["bornes"][1] + " ]"
+				
+				
+
+				p(class="mt-3 mb-0")
+					svg(width="16px" height="16px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" fill="#007800", class="me-3")
+						path(d="M444.478,346.793c-45.769-45.773-91.768-91.77-137.682-137.686l91.558-117.72c6.492,5.31,16.038,5.013,22.09-1.041   c6.455-6.453,6.455-16.919,0-23.372c-6.451-6.454-16.917-6.454-23.368,0c-6.057,6.056-6.354,15.602-1.046,22.091l-117.714,91.562   c-42.218-42.216-84.315-84.315-126.027-126.027c-3.143-3.143-6.536-4.287-9.842-3.883c-1.868,0.139-3.666,0.69-5.441,2.007   c-1.533,1.047-2.792,2.37-3.789,3.934c-23.207,27.188-21.619,63.85-12.463,96.787c14.605,52.537,50.029,99.02,87.664,137.295   c36.971,37.595,82.151,69.182,132.325,86.119c34.488,11.636,75.638,13.375,103.896-12.696   C449.606,359.574,449.114,351.428,444.478,346.793z")
+						path(d="M235.497,347.308c-15.174-11.486-29.848-24.341-43.804-38.534c-15.596-15.86-29.257-31.486-41.093-46.979   c-28.317,62.117-56.634,125.193-84.951,187.307c-2.52,5.531,0.391,13.398,7.135,13.398c55.086,0,110.171,0,165.258,0   c1.406,0,2.614-1.267,3.649-1.763c2.875-0.948,5.029-3.903,4.614-7.946C242.702,417.791,239.1,382.309,235.497,347.308z")
+					span Radar inclus
+				p
+					svg(width="16px" height="16px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" fill="#8c0000", class="me-3")
+						path(d="M444.478,346.793c-45.769-45.773-91.768-91.77-137.682-137.686l91.558-117.72c6.492,5.31,16.038,5.013,22.09-1.041   c6.455-6.453,6.455-16.919,0-23.372c-6.451-6.454-16.917-6.454-23.368,0c-6.057,6.056-6.354,15.602-1.046,22.091l-117.714,91.562   c-42.218-42.216-84.315-84.315-126.027-126.027c-3.143-3.143-6.536-4.287-9.842-3.883c-1.868,0.139-3.666,0.69-5.441,2.007   c-1.533,1.047-2.792,2.37-3.789,3.934c-23.207,27.188-21.619,63.85-12.463,96.787c14.605,52.537,50.029,99.02,87.664,137.295   c36.971,37.595,82.151,69.182,132.325,86.119c34.488,11.636,75.638,13.375,103.896-12.696   C449.606,359.574,449.114,351.428,444.478,346.793z")
+						path(d="M235.497,347.308c-15.174-11.486-29.848-24.341-43.804-38.534c-15.596-15.86-29.257-31.486-41.093-46.979   c-28.317,62.117-56.634,125.193-84.951,187.307c-2.52,5.531,0.391,13.398,7.135,13.398c55.086,0,110.171,0,165.258,0   c1.406,0,2.614-1.267,3.649-1.763c2.875-0.948,5.029-3.903,4.614-7.946C242.702,417.791,239.1,382.309,235.497,347.308z")
+					span Radar non inclus
+				
+				
+
+				h3(class="mt-4") Couches
+				div(class="list-group")
+					div(class="list-group-item")
+						p(class="mb-0 fw-medium") Fond de carte
+						div(class="d-flex align-items-center")
+							p(class="mb-0 pe-3") Opacité&nbsp;:
+							input(type="range", class="form-range", min="0" max="1", step="0.1", value="0.8")
+					div(class="list-group-item")
+						p(class="mb-0 fw-medium") Image
+						div(class="d-flex align-items-center")
+							p(class="mb-0 pe-3") Opacité&nbsp;:
+							input(type="range", class="form-range", min="0" max="1", step="0.1", value="0.7")
+					div(class="list-group-item")
+						p(class="mb-0 fw-medium") Radars
+						div(class="d-flex align-items-center")
+							p(class="mb-0 pe-3") Opacité&nbsp;:
+							input(type="range", class="form-range", min="0" max="1", step="0.1", value="1")
+			
+
+
+
+
+			div(class="col-8")
+				div(class="mb-3", id="map", style="height: 80vh")
+				div(id="popup", style="min-width: 150px")
+					a(href="#", id="fermeture-popup")
+					p(id="nom-radar-popup", class="mb-0")
+				div(class="row align-items-start")
+					div(class="col")
+						div(class="row align-items-start")
+							div(class="col-6")
+								select(class="form-select", id="selection-debut")
+									option(selected value=heures[0][0])= heures[0][1]
+									each heure in heures.slice(1)
+										option(value=heure[0])= heure[1]
+							div(class="col-6" align="center")
+								select(class="form-select w-75", id="selection-profondeur")
+									option(value="1") 1 heure
+									option(value="2") 2 heures
+									option(selected value="perso") Personnalisé
+					div(class="col-3", align="center")
+						h4(class="mb-0 text-center")
+							span(class="badge text-bg-secondary w-100", id="heure-en-cours") -
+					div(class="col")
+						div(class="row align-items-start")
+							div(class="col-6" align="center")
+								div(class="w-75 d-flex align-items-center")
+									button(type="button", class="btn btn-outline-primary me-2", id="bouton-lancer")
+										svg(xmlns="http://www.w3.org/2000/svg", width="16", height="16", fill="currentColor", class="bi bi-play", viewBox="0 0 16 16")
+											path(d="M10.804 8 5 4.633v6.734zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696z")
+									button(type="button", class="btn btn-outline-primary me-2", id="bouton-pause")
+										svg(xmlns="http://www.w3.org/2000/svg", width="16", height="16", fill="currentColor", class="bi bi-pause", viewBox="0 0 16 16")
+											path(d="M6 3.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5m4 0a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5")
+									input(type="range", class="form-range", min="1" max="5", step="1", value="1", id="vitesse")
+							div(class="col-6")
+								select(class="form-select", id="selection-fin")
+									each heure in heures.slice(0, -1)
+										option(value=heure[0])= heure[1]
+									option(selected value=heures.at(-1)[0])= heures.at(-1)[1]
+				
+			
+
+
+
+
+			div(class="col-2")
+				h3 Heures
+				div(class="overflow-y-scroll heures")
+					each heure in heures
+						if heures_dispo.includes(heure[0])
+							p(class="mb-0")
+								a(class="link-opacity-50-hover heure text-dark heure-dispo", id=heure[0])= heure[1]
+						else
+							p(class="mb-0")
+								a(class="link-opacity-50-hover heure text-dark heure-non-dispo", id=heure[0]) #{heure[1]} &#8226
+	
+	script.
+		window.type = "#{type}";
+	
+	script(src="/javascripts/bundle_mosa.js", type="text/javascript")

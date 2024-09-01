@@ -9,6 +9,7 @@
 #include "json.hpp"
 #include <fstream>
 #include <cstdio>
+#include <sys/stat.h>
 
 namespace fs = std::filesystem;
 using json = nlohmann::json;
@@ -21,42 +22,84 @@ int main(int argc, char *argv[])
 	int res;
 	PixmapValeursFlottantes pixmapZ;
 	PixmapValeursEntieres pixmapLameEau;
+	std::vector<unsigned long> radarsPresents;
 
 	std::string nomFichier;
 	std::string heure;
 
-	std::ifstream f;
+	std::fstream f;
 
 	json echelles;
+	json radarsPresentsZ;
+	json radarsPresentsLameEau;
 	
 	cv::Mat matrice(1536, 1536, CV_8UC4);
 
+	struct stat buffer;
+
 	
 
 
-
-	f.open(std::getenv("CHEMIN_ECHELLES"));
-	if(!f.is_open())
+	if(stat(std::getenv("CHEMIN_ECHELLES"), &buffer) == 0)
 	{
-		std::cout << "Erreur a la lecture des echelles\n";
-		exit(EXIT_FAILURE);
+		f.open(std::getenv("CHEMIN_ECHELLES"), std::fstream::in);
+		if(!f.is_open())
+		{
+			std::cout << "Erreur a la lecture des echelles\n";
+			exit(EXIT_FAILURE);
+		}
+		echelles = json::parse(f);
+		f.close();
 	}
-	echelles = json::parse(f);
-	f.close();
 
-
-
-
-
-	for(const auto & f : fs::directory_iterator(std::getenv("DIR_BUFRS_MOSA_Z")))
+	if(stat(std::getenv("CHEMIN_RADARS_PRESENTS_MOSA_Z"), &buffer) == 0)
 	{
-		nomFichier = f.path().string();
-		heure = f.path().filename().string().substr(0, 12);
+		f.open(std::getenv("CHEMIN_RADARS_PRESENTS_MOSA_Z"), std::fstream::in);
+		if(!f.is_open())
+		{
+			std::cout << "Erreur a l'ouverture des radars presents pour la mosaique Z\n";
+			exit(EXIT_FAILURE);
+		}
+		radarsPresentsZ = json::parse(f);
+		f.close();
+	}
+
+	if(stat(std::getenv("CHEMIN_RADARS_PRESENTS_MOSA_Z"), &buffer) == 0)
+	{
+		f.open(std::getenv("CHEMIN_RADARS_PRESENTS_MOSA_LAME_EAU"), std::fstream::in);
+		if(!f.is_open())
+		{
+			std::cout << "Erreur a l'ouverture des radars presents pour la mosaique de lame d'eau\n";
+			exit(EXIT_FAILURE);
+		}
+		radarsPresentsLameEau = json::parse(f);
+		f.close();
+	}
+
+
+
+
+
+	for(const auto & fichierBufrPresent : fs::directory_iterator(std::getenv("DIR_BUFRS_MOSA_Z")))
+	{
+		nomFichier = fichierBufrPresent.path().string();
+		heure = fichierBufrPresent.path().filename().string().substr(0, 12);
 
 		res = decodeur.ouvrir_fichier(nomFichier);
 		if(res == 0)
 		{
-			pixmapZ = decodeur.lire_pixmap_zhbas(ZBAS);
+			radarsPresents.clear();
+			pixmapZ = decodeur.lire_pixmap_zhbas(ZBAS, &radarsPresents);
+
+			radarsPresentsZ[heure] = radarsPresents;
+			f.open(std::getenv("CHEMIN_RADARS_PRESENTS_MOSA_Z"), std::fstream::out | std::fstream::trunc);
+			if(!f.is_open())
+			{
+				std::cout << "Erreur a l'ouverture des radars presents pour la mosaique Z\n";
+				exit(EXIT_FAILURE);
+			}
+			f << std::setw(1) << std::setfill('\t') << radarsPresentsZ;
+			f.close();
 
 			for(unsigned short i=0 ; i<1536 ; i++)
 			{
@@ -109,15 +152,26 @@ int main(int argc, char *argv[])
 
 
 
-	for(const auto & f : fs::directory_iterator(std::getenv("DIR_BUFRS_MOSA_LAME_EAU")))
+	for(const auto & fichierBufrPresent : fs::directory_iterator(std::getenv("DIR_BUFRS_MOSA_LAME_EAU")))
 	{
-		nomFichier = f.path().string();
-		heure = f.path().filename().string().substr(0, 12);
-
+		nomFichier = fichierBufrPresent.path().string();
+		heure = fichierBufrPresent.path().filename().string().substr(0, 12);
+		
 		res = decodeur.ouvrir_fichier(nomFichier);
 		if(res == 0)
 		{
+			radarsPresents.clear();
 			pixmapLameEau = decodeur.lire_pixmap_lame_eau_code(CUMUL);
+
+			radarsPresentsZ[heure] = radarsPresents;
+			f.open(std::getenv("CHEMIN_RADARS_PRESENTS_MOSA_LAME_EAU"), std::fstream::out | std::fstream::trunc);
+			if(!f.is_open())
+			{
+				std::cout << "Erreur a l'ouverture des radars presents pour la mosaique de lame d'eau\n";
+				exit(EXIT_FAILURE);
+			}
+			f << std::setw(1) << std::setfill('\t') << radarsPresentsLameEau;
+			f.close();
 
 			for(unsigned short i=0 ; i<1536 ; i++)
 			{

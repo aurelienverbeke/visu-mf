@@ -35,9 +35,11 @@ app.use(express.static(path.join(__dirname, "node_modules")));
 
 var routerIndex = require("./routes/index");
 var routerImages = require("./routes/images");
+var routerObs = require("./routes/obs");
 
 app.use("/", routerIndex);
 app.use("/images", routerImages);
+app.use("/obs", routerObs);
 
 
 

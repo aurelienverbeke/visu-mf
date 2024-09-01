@@ -1326,7 +1326,8 @@ PixmapValeursFlottantes DecodeurBUFR::lire_pixmap_pam_pag_decode(
 
 
 
-PixmapValeursFlottantes DecodeurBUFR::lire_pixmap_zhbas(const unsigned char & numeroParametre)
+PixmapValeursFlottantes DecodeurBUFR::lire_pixmap_zhbas(const unsigned char & numeroParametre,
+							std::vector<unsigned long>* radarsPresents)
 {
 	unsigned short nbAzimuts = 0;
 	unsigned short nbPortes = 0;
@@ -1353,6 +1354,10 @@ PixmapValeursFlottantes DecodeurBUFR::lire_pixmap_zhbas(const unsigned char & nu
 	unsigned char nombreDescripteursARepeter = 0;
 
 	unsigned long indiceMax = 0;
+
+	unsigned char numeroBlockOmm = 0;
+	unsigned short numeroStationOmm = 0;
+	bool radarAAjouter = false;
 	
 
 
@@ -1565,10 +1570,33 @@ PixmapValeursFlottantes DecodeurBUFR::lire_pixmap_zhbas(const unsigned char & nu
 								position += nbBitsCalage;
 								j++;
 							}
+
+							else if(descripteurs[j] == D(0,1,1)
+									&& radarsPresents!=nullptr)
+							{
+								position += lire_descripteur_section_4<unsigned char>(j,
+											position,
+											&numeroBlockOmm);
+								radarAAjouter = true;
+							}
 							
+							else if(descripteurs[j] == D(0,1,2)
+									&& radarsPresents!=nullptr)
+								position += lire_descripteur_section_4<unsigned short>(j,
+											position,
+											&numeroStationOmm);
+
 							else	
 								position += lire_descripteur_section_4<char>(j,
 											position);
+
+							if(radarAAjouter)
+							{
+								radarsPresents->push_back(
+										numeroBlockOmm*1000
+										+ numeroStationOmm);
+								radarAAjouter = false;
+							}
 						}
 					}
 				}

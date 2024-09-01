@@ -301,10 +301,13 @@ class DecodeurBUFR
 		 *
 		 * @param numeroParametre Parametre voulu
 		 * ZBAS=0 | HBAS=1
+		 * @param radarsPresents Tableau qui contiendra les numero OMM des radars
+		 * inclus dans la mosaique
 		 *
 		 * @return PixmapValeursFlottantes Pixmap correspondante au parametre demande
 		 */
-		PixmapValeursFlottantes lire_pixmap_zhbas(const unsigned char & numeroParametre);
+		PixmapValeursFlottantes lire_pixmap_zhbas(const unsigned char & numeroParametre,
+						std::vector<unsigned long>* radarsPresents=nullptr);
 
 
 
