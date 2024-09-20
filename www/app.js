@@ -1,8 +1,14 @@
+#! /usr/bin/env node
+
 var createError = require("http-errors");
 var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+var https = require("https");
+var http = require("http");
+var debug = require("debug")("serveur:*");
+var fs = require("fs");
 
 
 
@@ -61,4 +67,50 @@ app.use(function(err, req, res, next) {
 	res.render("error");
 });
 
-module.exports = app;
+
+
+
+
+// creation du serveur HTTP
+
+const options = {
+	key: fs.readFileSync("serveur.key"),
+	cert: fs.readFileSync("serveur.crt"),
+};
+
+var port = parseInt(process.env.PORT);
+var serveur = http.createServer(options, app);
+
+serveur.listen(port);
+
+serveur.on("error", (error) => {
+	if (error.syscall !== "listen")
+		throw error;
+
+	var bind = typeof port === "string"
+		? "Pipe " + port
+		: "Port " + port;
+
+	switch (error.code) {
+		case "EACCES":
+			console.error(bind + " necessite des privileges root");
+			process.exit(1);
+			break;
+		case "EADDRINUSE":
+			console.error(bind + " est deja utilise");
+			process.exit(1);
+			break;
+		default:
+			throw error;
+	}
+});
+
+serveur.on("listening", () => {
+	var adresse = serveur.address();
+	
+	var bind = typeof adresse === "string"
+		? "pipe " + adresse
+		: "port " + adresse.port;
+	
+	debug("Le serveur ecoute sur le " + bind);
+});

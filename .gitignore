@@ -2,6 +2,7 @@ bin/
 *.bufr.gz
 *.png
 *.swp
+*.sha256
 bundle_mosa.js
 bundle_obs.js
 radars_presents.json

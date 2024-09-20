@@ -9,6 +9,7 @@ import VectorSource from 'ol/source/Vector.js';
 import Feature from 'ol/Feature.js';
 import Point from 'ol/geom/Point.js';
 import Overlay from 'ol/Overlay.js';
+import {Circle, Fill, Stroke, Style} from 'ol/style.js';
 
 
 
@@ -32,7 +33,19 @@ let map = new Map({
 	target: "map",
 	layers: [
 		new TileLayer({ source: new OSM() }),
-		new VectorLayer({ source: new VectorSource() })
+		new VectorLayer({
+			source: new VectorSource(),
+			style: new Style({
+				image: new Circle({
+					fill: new Fill({ color: [255, 255, 255, 0.5] }),
+					stroke: new Stroke({
+						color: "#007bff",
+						width: 2
+					}),
+					radius: 6
+				})
+			})
+		})
 	],
 	overlays: [ overlay ],
 	view: new View({ center: fromLonLat([2, 46.5]), zoom: 6.3 })
@@ -83,13 +96,14 @@ map.on("click", (event) => {
 	if(featuresSousClic.length==1) {
 		let nomStation = featuresSousClic[0].get("nom");
 		document.getElementById("nom-station-popup").innerHTML = `Station : ${nomStation}`;
+		document.getElementById("lien-6-min-popup").href = `/obs/tableau-6-min/${featuresSousClic[0].get('id')}`;
 		overlay.setPosition(event.coordinate);
 	}
 	else
 		fermer_overlay();
 });
 
-boutonFermer.addEventListener( "click", () => { fermer_overlay() });
+boutonFermer.addEventListener("click", () => { fermer_overlay() });
 
 
 
@@ -100,3 +114,30 @@ boutonFermer.addEventListener( "click", () => { fermer_overlay() });
  * Recherche d'un lieu
  *
  */
+
+document.getElementById("lancer-recherche").addEventListener(
+	"click",
+	(event) => {
+		let adresseRecherchee = document.getElementById("barre-recherche").value;
+
+		fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(adresseRecherchee)}&format=json`)
+			.then((res) => res.json())
+			.then((json) => {
+				if(json.length > 0) {
+					map.getView().setCenter(fromLonLat([parseFloat(json[0]["lon"]), parseFloat(json[0]["lat"])]));
+					map.getView().setZoom(1.8*Math.pow(parseInt(json[0]["place_rank"]), 0.7));
+				}
+			});
+	}
+);
+
+document.getElementById("barre-recherche").addEventListener(
+	"keyup",
+	(event) => {
+		if(event.keyCode == 13)
+			document.getElementById("lancer-recherche").dispatchEvent(new MouseEvent("click"));
+	}
+);
+
+// initialisation
+document.getElementById("barre-recherche").value = "";

@@ -1,1 +1,0 @@
-curl "https://nominatim.openstreetmap.org/search?q=birmingham&format=json"

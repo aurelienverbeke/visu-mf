@@ -469,7 +469,7 @@ document.getElementById("opacite-image").addEventListener(
 		});
 	}
 )
-document.getElementById("opacite-image").valueAsNumber = 0.7;
+document.getElementById("opacite-image").valueAsNumber = 0.8;
 document.getElementById("opacite-image").dispatchEvent(new InputEvent("input"));
 
 

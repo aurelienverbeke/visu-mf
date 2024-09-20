@@ -28,7 +28,7 @@ router.get("/mosaiques/z/",
 		
 		let heuresDispo = fs.readdirSync(process.env.DIR_IMAGES_MOSA_Z).map((fichier) => fichier.substring(0, 12));
 
-		res.render("images", { title: "Mosaïque Z", heures: heures, heures_dispo: heuresDispo, type: "z", echelles: require(process.env.CHEMIN_ECHELLES) });
+		res.render("mosaiques", { title: "Mosaïque Z", heures: heures, heures_dispo: heuresDispo, type: "z", echelles: require(process.env.CHEMIN_ECHELLES) });
 	}
 );
 
@@ -54,7 +54,7 @@ router.get("/mosaiques/lame_eau/",
 		
 		let heuresDispo = fs.readdirSync(process.env.DIR_IMAGES_MOSA_LAME_EAU).map((fichier) => fichier.substring(0, 12));
 
-		res.render("images", { title: "Mosaïque lame d'eau", heures: heures, heures_dispo: heuresDispo, type: "lame_eau", echelles: require(process.env.CHEMIN_ECHELLES) });
+		res.render("mosaiques", { title: "Mosaïque lame d'eau", heures: heures, heures_dispo: heuresDispo, type: "lame_eau", echelles: require(process.env.CHEMIN_ECHELLES) });
 	}
 );
 
