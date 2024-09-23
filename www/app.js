@@ -9,6 +9,7 @@ var https = require("https");
 var http = require("http");
 var debug = require("debug")("serveur:*");
 var fs = require("fs");
+var useragent = require("express-useragent")
 
 
 
@@ -34,6 +35,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "node_modules")));
+app.use(useragent.express());
 
 
 
@@ -79,7 +81,7 @@ const options = {
 };
 
 var port = parseInt(process.env.PORT);
-var serveur = http.createServer(options, app);
+var serveur = http.createServer(app);
 
 serveur.listen(port);
 

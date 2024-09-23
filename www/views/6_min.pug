@@ -1,7 +1,10 @@
 extends layout
 
 block content
-	h3 Station :
 	div(id="graphique")
 
+	script(src="https://code.highcharts.com/highcharts.js")
+	script(src="https://code.highcharts.com/modules/accessibility.js")
+	script(src="https://code.highcharts.com/modules/exporting.js")
+	script(src="https://code.highcharts.com/modules/export-data.js")
 	script(src="/javascripts/bundle_obs_6_min.js", type="text/javascript")

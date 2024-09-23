@@ -80,7 +80,7 @@ router.get("/6-min/:id",
 							pluie: periode["rr_per"],
 							neige: periode["sss"]
 						};
-					});
+					}).reverse();
 
 					res.json(donnees);
 				});

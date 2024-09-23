@@ -3,23 +3,26 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node app.js",
-    "devstart": "nodemon app.js",
+    "start": "node ./app.js",
+    "devstart": "nodemon --ignore 'radars_presents.json' ./app.js",
     "serverstart": "DEBUG=www:* npm run devstart",
     "build_old": "browserify -g [ babelify --presets [ \"@babel/preset-env\" ] ] -g uglifyify -g [ @browserify/envify --DIR_IMAGES_MOSA_Z $DIR_IMAGES_MOSA_Z ] --entry pour_bundle_client.js > public/javascripts/bundle.js",
     "build_mosa": "browserify -g [ babelify --presets [ \"@babel/preset-env\" ] ] -g uglifyify --entry pour_bundle_client_mosa.js > public/javascripts/bundle_mosa.js",
+    "build_mosa_mobile": "browserify -g [ babelify --presets [ \"@babel/preset-env\" ] ] -g uglifyify --entry pour_bundle_client_mosa_mobile.js > public/javascripts/bundle_mosa_mobile.js",
     "build_obs_6_min": "browserify -g [ babelify --presets [ \"@babel/preset-env\" ] ] -g uglifyify --entry pour_bundle_client_obs_6_min.js > public/javascripts/bundle_obs_6_min.js",
     "build_obs": "browserify -g [ babelify --presets [ \"@babel/preset-env\" ] ] -g uglifyify --entry pour_bundle_client_obs.js > public/javascripts/bundle_obs.js"
   },
   "dependencies": {
     "@browserify/envify": "^6.0.0",
-    "browserify": "^17.0.0",
     "cookie-parser": "^1.4.6",
     "csvtojson": "^2.0.10",
     "debug": "^4.3.6",
     "express": "^4.19.2",
+    "express-device": "^0.4.2",
+    "express-useragent": "^1.0.15",
     "highcharts": "^11.4.8",
     "http-errors": "~2.0.0",
+    "mobile-detect": "^1.4.5",
     "morgan": "^1.10.0",
     "ol": "^10.0.0",
     "proj4": "^2.12.0",
@@ -32,7 +35,7 @@
     "@babel/core": "^7.0.0-beta.56",
     "@babel/preset-env": "^7.0.0-beta.56",
     "babelify": "^9.0.0",
-    "browserify": "^16.2.2",
+    "browserify": "^16.5.2",
     "nodemon": "^3.1.4",
     "uglifyify": "^5.0.1"
   }

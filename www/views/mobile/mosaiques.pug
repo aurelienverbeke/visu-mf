@@ -1,0 +1,134 @@
+extends layout
+
+block content
+	div(class="container-fluid")
+		div(class="mb-3 map-mosa", id="map")
+		div(id="popup", class="popup-map-mosa")
+			a(href="#", id="fermeture-popup")
+			p(id="nom-radar-popup", class="mb-0")
+		div(class="row align-items-start mb-3" id="boutons-animation")
+			div(class="col-2 pe-0" align="center")
+				button(type="button", class="btn btn-outline-primary", id="bouton-lancer")
+					i(class="bi bi-gear")
+			div(class="col-8", align="center")
+				select(class="form-select text-bg-secondary text-center fw-bold mb-0 ps-2 pe-2" id="selection-heure")
+					each heure in heures
+						if heures_dispo.includes(heure[0])
+							option(value=heure[0], class="heure heure-dispo")= heure[1]
+						else
+							option(value=heure[0], class="heure heure-non-dispo") #{heure[1]} &#8226
+			div(class="col-2 ps-0" align="center")
+				button(type="button", class="btn btn-outline-primary", id="bouton-lancer")
+					i(class="bi bi-play", id="icone-lancer")
+					i(class="bi bi-pause", id="icone-pause", hidden)
+		
+	
+
+
+
+
+	
+	
+
+
+
+	div(class="modal fade" id="popup-legende" tabindex="-1")
+		div(class="modal-dialog")
+			div(class="modal-content")
+				div(class="modal-header")
+					h1(class="modal-title fs-5") Légende
+					button(type="button" class="btn-close" data-bs-dismiss="modal")
+				div(class="modal-body")
+					if type == "z"
+						h4 Echelle (dBZ)
+					else
+						h4 Echelle (mm)
+					each borne in echelles[type]
+						if borne["bornes"] != "manquant"
+							p(class="mb-0")
+								if borne["couleur"][3] == 0
+									svg(class="me-3", width="16", height="16", class="bi bi-x-square", viewBox="0 0 16 16")
+										path(d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z", fill="#000000")
+										path(d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708", fill="#ff0000")
+								else
+									svg(class="me-3", width="16", height="16", fill="rgba(" + borne['couleur'][0] + "," + borne['couleur'][1] + "," + borne['couleur'][2] + "," + borne['couleur'][3] + ")", stroke="#000000", class="bi bi-square-fill", viewBox="0 0 16 16")
+										path(d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2z")
+								if borne.hasOwnProperty("commentaire")
+									span= borne["commentaire"]
+								else
+									span= "] " + borne["bornes"][0] + " ; " + borne["bornes"][1] + " ]"
+					
+					
+
+					p(class="mt-3 mb-0")
+						svg(width="16px", height="16px", viewBox="0 0 512 512", enable-background="new 0 0 512 512", fill="#007800", class="me-3")
+							path(d="M444.478,346.793c-45.769-45.773-91.768-91.77-137.682-137.686l91.558-117.72c6.492,5.31,16.038,5.013,22.09-1.041   c6.455-6.453,6.455-16.919,0-23.372c-6.451-6.454-16.917-6.454-23.368,0c-6.057,6.056-6.354,15.602-1.046,22.091l-117.714,91.562   c-42.218-42.216-84.315-84.315-126.027-126.027c-3.143-3.143-6.536-4.287-9.842-3.883c-1.868,0.139-3.666,0.69-5.441,2.007   c-1.533,1.047-2.792,2.37-3.789,3.934c-23.207,27.188-21.619,63.85-12.463,96.787c14.605,52.537,50.029,99.02,87.664,137.295   c36.971,37.595,82.151,69.182,132.325,86.119c34.488,11.636,75.638,13.375,103.896-12.696   C449.606,359.574,449.114,351.428,444.478,346.793z")
+							path(d="M235.497,347.308c-15.174-11.486-29.848-24.341-43.804-38.534c-15.596-15.86-29.257-31.486-41.093-46.979   c-28.317,62.117-56.634,125.193-84.951,187.307c-2.52,5.531,0.391,13.398,7.135,13.398c55.086,0,110.171,0,165.258,0   c1.406,0,2.614-1.267,3.649-1.763c2.875-0.948,5.029-3.903,4.614-7.946C242.702,417.791,239.1,382.309,235.497,347.308z")
+						span Radar inclus
+					p
+						svg(width="16px", height="16px", viewBox="0 0 512 512", enable-background="new 0 0 512 512", fill="#8c0000", class="me-3")
+							path(d="M444.478,346.793c-45.769-45.773-91.768-91.77-137.682-137.686l91.558-117.72c6.492,5.31,16.038,5.013,22.09-1.041   c6.455-6.453,6.455-16.919,0-23.372c-6.451-6.454-16.917-6.454-23.368,0c-6.057,6.056-6.354,15.602-1.046,22.091l-117.714,91.562   c-42.218-42.216-84.315-84.315-126.027-126.027c-3.143-3.143-6.536-4.287-9.842-3.883c-1.868,0.139-3.666,0.69-5.441,2.007   c-1.533,1.047-2.792,2.37-3.789,3.934c-23.207,27.188-21.619,63.85-12.463,96.787c14.605,52.537,50.029,99.02,87.664,137.295   c36.971,37.595,82.151,69.182,132.325,86.119c34.488,11.636,75.638,13.375,103.896-12.696   C449.606,359.574,449.114,351.428,444.478,346.793z")
+							path(d="M235.497,347.308c-15.174-11.486-29.848-24.341-43.804-38.534c-15.596-15.86-29.257-31.486-41.093-46.979   c-28.317,62.117-56.634,125.193-84.951,187.307c-2.52,5.531,0.391,13.398,7.135,13.398c55.086,0,110.171,0,165.258,0   c1.406,0,2.614-1.267,3.649-1.763c2.875-0.948,5.029-3.903,4.614-7.946C242.702,417.791,239.1,382.309,235.497,347.308z")
+						span Radar non inclus
+	
+	
+
+
+
+	div(class="modal fade" id="popup-config" tabindex="-1")
+		div(class="modal-dialog")
+			div(class="modal-content")
+				div(class="modal-header")
+					h1(class="modal-title fs-5") Configuration
+					button(type="button" class="btn-close" data-bs-dismiss="modal")
+				div(class="modal-body")
+					div(class="list-group" id="liste-couches")
+						div(class="list-group-item d-flex align-items-center pe-0" id="couche-fond-carte")
+							div
+								p(class="mb-0 fw-medium") Fond de carte
+								div(class="d-flex align-items-center")
+									p(class="mb-0 pe-3") Opacité&nbsp;:
+									input(type="range", class="form-range", min="0" max="1", step="0.1", value="0.8", id="opacite-fond-carte")
+							div
+								i(class="bi bi-grip-vertical fs-2 ms-3 poignee-couches")
+						div(class="list-group-item d-flex align-items-center pe-0", id="couche-radars")
+							div
+								p(class="mb-0 fw-medium") Radars
+								div(class="d-flex align-items-center")
+									p(class="mb-0 pe-3") Opacité&nbsp;:
+									input(type="range", class="form-range", min="0" max="1", step="0.1", value="1", id="opacite-radars")
+							div
+								i(class="bi bi-grip-vertical fs-2 ms-3 poignee-couches")
+						div(class="list-group-item d-flex align-items-center pe-0", id="couche-image")
+							div
+								p(class="mb-0 fw-medium") Image
+								div(class="d-flex align-items-center")
+									p(class="mb-0 pe-3") Opacité&nbsp;:
+									input(type="range", class="form-range", min="0" max="1", step="0.1", value="0.7", id="opacite-image")
+							div
+								i(class="bi bi-grip-vertical fs-2 ms-3 poignee-couches")
+					div(class="row align-items-start" hidden)
+						div(class="col")
+							select(class="form-select form-select-sm", id="selection-debut")
+								option(selected value=heures[0][0])= heures[0][1]
+								each heure in heures.slice(1)
+									option(value=heure[0])= heure[1]
+						div(class="col-1")
+						div(class="col")
+							select(class="form-select form-select-sm", id="selection-fin")
+								each heure in heures.slice(0, -1)
+									option(value=heure[0])= heure[1]
+								option(selected value=heures.at(-1)[0])= heures.at(-1)[1]
+	
+	
+
+
+
+	script.
+		window.type = "#{type}";
+		if(type == "z")
+			document.getElementById("nav-mosa-z").classList.add("active");
+		if(type == "lame_eau")
+			document.getElementById("nav-mosa-lame-eau").classList.add("active");
+	
+	script(src="/javascripts/bundle_mosa_mobile.js", type="text/javascript")

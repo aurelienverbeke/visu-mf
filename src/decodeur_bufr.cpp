@@ -1626,11 +1626,7 @@ PixmapValeursFlottantes DecodeurBUFR::lire_pixmap_zhbas(const unsigned char & nu
 			// on ne lit que la taille
 			else
 			{
-				//std::cout << (short)descripteurs[i].f << " " << (short)descripteurs[i].x << " " << (short)descripteurs[i].y << " : ";
-				//double temp;
-				//position += lire_descripteur_section_4<double>(i, position, &temp);
 				position += lire_descripteur_section_4<char>(i, position);
-				//std::cout << temp << "\n";
 			}
 		}
 	}

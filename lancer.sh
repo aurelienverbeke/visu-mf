@@ -67,5 +67,5 @@ then
 	sha256sum "${DIR_WWW}pour_bundle_client_mosa.js" | cut -d " " -f 1 > "${DIR_WWW}pour_bundle_client_mosa.js.sha256"
 	sha256sum "${DIR_WWW}pour_bundle_client_obs.js" | cut -d " " -f 1 > "${DIR_WWW}pour_bundle_client_obs.js.sha256"
 	demon &
-	npm run serverstart --prefix ${DIR_WWW}
+	npm run serverstart --prefix ${DIR_WWW} &
 fi

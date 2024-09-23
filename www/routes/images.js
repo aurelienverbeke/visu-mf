@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const fs = require("fs");
+const MobileDetect = require('mobile-detect')
 
 
 
@@ -28,7 +29,12 @@ router.get("/mosaiques/z/",
 		
 		let heuresDispo = fs.readdirSync(process.env.DIR_IMAGES_MOSA_Z).map((fichier) => fichier.substring(0, 12));
 
-		res.render("mosaiques", { title: "Mosaïque Z", heures: heures, heures_dispo: heuresDispo, type: "z", echelles: require(process.env.CHEMIN_ECHELLES) });
+		if(req.useragent["isMobile"])
+			var page = "mobile/mosaiques";
+		else
+			var page = "mosaiques"
+
+		res.render(page, { title: "Mosaïque Z", heures: heures, heures_dispo: heuresDispo, type: "z", echelles: require(process.env.CHEMIN_ECHELLES) });
 	}
 );
 
@@ -54,7 +60,12 @@ router.get("/mosaiques/lame_eau/",
 		
 		let heuresDispo = fs.readdirSync(process.env.DIR_IMAGES_MOSA_LAME_EAU).map((fichier) => fichier.substring(0, 12));
 
-		res.render("mosaiques", { title: "Mosaïque lame d'eau", heures: heures, heures_dispo: heuresDispo, type: "lame_eau", echelles: require(process.env.CHEMIN_ECHELLES) });
+		if(req.useragent["isMobile"])
+			var page = "mobile/mosaiques";
+		else
+			var page = "mosaiques"
+
+		res.render(page, { title: "Mosaïque lame d'eau", heures: heures, heures_dispo: heuresDispo, type: "lame_eau", echelles: require(process.env.CHEMIN_ECHELLES) });
 	}
 );
 
