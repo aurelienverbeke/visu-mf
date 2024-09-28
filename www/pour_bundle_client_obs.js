@@ -48,7 +48,7 @@ let map = new Map({
 		})
 	],
 	overlays: [ overlay ],
-	view: new View({ center: fromLonLat([2, 46.5]), zoom: 6.3 })
+	view: new View({ center: fromLonLat([2, 46.5]), zoom: 5.9 })
 });
 
 map.addControl(new ZoomToExtent({ extent: map.getView().calculateExtent(map.getSize()) }));
