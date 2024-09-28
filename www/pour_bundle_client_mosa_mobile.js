@@ -102,7 +102,7 @@ window.map = new Map({
 		})
 	],
 	overlays: [ overlay ],
-	view: new View({ center: transform([148847, -4360000], projection, "EPSG:3857"), zoom: 5.9 })
+	view: new View({ center: transform([148847, -4360000], projection, "EPSG:3857"), zoom: 5 })
 });
 
 
@@ -151,16 +151,6 @@ map.on(
 
 
 
-// changement du pointeur en "petite main" quand on est sur un element selectionnable pour afficher un overlay (radars)
-map.on("pointermove", (event) => {
-        if(map.hasFeatureAtPixel(event.pixel) && map.getFeaturesAtPixel(event.pixel)[0].get("nom") != "filigrane")
-                map.getTargetElement().style.cursor = "pointer";
-        else
-                map.getTargetElement().style.cursor = "";
-});
-
-
-
 // affichage et fermeture de l'overlay de details sur le radar clique
 function fermer_overlay () {
         overlay.setPosition(undefined);
@@ -189,6 +179,7 @@ boutonFermer.addEventListener( "click", () => { fermer_overlay() });
 /*
  *
  * Recuperation de la liste des radars et de ceux presents dans la mosaique
+ * On utilise des XMLHttpRequest pour bloquer l'execution tant qu'on n'a pas recu les reponses
  *
  */
 
@@ -226,10 +217,12 @@ req.send();
 
 /*
  *
- * Ajout des images et des changements d'images quand on passe la souris sur les heures
+ * Ajout des images et des changements d'images quand on selectionne une heure
  * Il faut mettre a jour les radars presents
  *
  */
+
+let selectionHeure = document.getElementById("selection-heure");
 
 // image existante
 for(let element of document.getElementsByClassName("heure-dispo")) {
@@ -249,12 +242,17 @@ for(let element of document.getElementsByClassName("heure-dispo")) {
 			nom: "image"
 		})
 	);
+}
 
-	element.addEventListener(
-		"mouseover",
-		(event) => {
+selectionHeure.addEventListener(
+	"change",
+	(event) => {
+		let heureSelectionnee = selectionHeure.selectedOptions[0];
+		let heureDispo = heureSelectionnee.classList.contains("heure-dispo");
+
+		if(heureDispo) {
 			map.getLayers().forEach((layer) => {
-				if(layer.get("heure") == element.id || layer.get("nom") == "radars_presents" || layer.get("nom") == "radars_absents")
+				if(layer.get("heure") == heureSelectionnee.id || layer.get("nom") == "radars_presents" || layer.get("nom") == "radars_absents")
 					layer.set("visible", true);
 				else {
 					if(layer.get("toujoursAfficher") == false)
@@ -268,7 +266,7 @@ for(let element of document.getElementsByClassName("heure-dispo")) {
 			let radarsAbsentsNouveau = [];
 
 			let trier = (radar) => {
-				if(radarsPresents[element.id].includes(parseInt(radar.get("omm")))) {
+				if(radarsPresents[heureSelectionnee.id].includes(parseInt(radar.get("omm")))) {
 					radarsPresentsNouveau.push(radar.clone());
 				}
 				else {
@@ -284,30 +282,18 @@ for(let element of document.getElementsByClassName("heure-dispo")) {
 
 			map.getLayers().item(1).getSource().addFeatures(radarsPresentsNouveau);
 			map.getLayers().item(2).getSource().addFeatures(radarsAbsentsNouveau);
-
-
-
-			document.getElementById("heure-en-cours").innerHTML = element.innerHTML;
 		}
-	);
-}
 
-// image manquante
-for(let element of document.getElementsByClassName("heure-non-dispo")) {
-	element.addEventListener(
-		"mouseover",
-		(event) => {
+		else {
 			map.getLayers().forEach((layer) => {
 				if(layer.get("toujoursAfficher") == false)
 					layer.set("visible", false);
 				if(layer.get("nom") == "filigrane")
 					layer.set("visible", true);
 			});
-
-			document.getElementById("heure-en-cours").innerHTML = element.innerHTML;
 		}
-	);
-}
+	}
+);
 
 
 
@@ -325,46 +311,44 @@ function lancer_animation () {
 	if(idInterval)
 		clearInterval(idInterval);
 
-	let heureDebut = document.getElementById("selection-debut").value;
-	let heureFin = document.getElementById("selection-fin").value;
+	// indices des deux heures choisies
+	let indiceHeureDebut = document.getElementById("selection-debut").selectedIndex;
+	let indiceHeureFin = document.getElementById("selection-fin").selectedIndex;
 	
-	let images = Array.from(document.getElementsByClassName("heure"));
-	images = images.slice(
-			images.findIndex((elem) => elem.id==heureDebut),
-			images.findIndex((elem) => elem.id==heureFin)+1
-		);
+	// indices des options dans la selection d'heure qui sont entre les deux heures choisies
+	// let images = Array.from({ length: indiceHeureFin-indiceHeureDebut+1 }, (_,i) => i+indiceHeureDebut);
 
-	let indiceEnCours = images.length - 1;
-	let indicePrecedent = images.length - 2;
+	let indiceEnCours = indiceHeureFin;
+	let indicePrecedent = indiceHeureFin - 1;
 	idInterval = setInterval(
 		() => {
-			images[indiceEnCours].dispatchEvent(new MouseEvent("mouseover"));
+			selectionHeure.selectedIndex = indiceEnCours;
+			selectionHeure.dispatchEvent(new Event("change"));
 			indicePrecedent = indiceEnCours;
 			indiceEnCours++;
-			if(indiceEnCours == images.length)
-				indiceEnCours = 0;
+			if(indiceEnCours > indiceHeureFin)
+				indiceEnCours = indiceHeureDebut;
 		},
-		500 / Math.sqrt(document.getElementById("vitesse").valueAsNumber)
+		500 / Math.sqrt(document.getElementById("vitesse").valueAsNumber) // une fonction qui marche pas mal
 	);
-
-	document.getElementById("icone-lancer").hidden = true;
-	document.getElementById("icone-pause").hidden = false;
 }
 
-document.getElementById("bouton-lancer").addEventListener(
-	"click", lancer_animation
-);
-
-document.getElementById("bouton-pause").addEventListener(
-	"click",
-	(event) => {
+document.getElementById("bouton-lancer").addEventListener("click", (event) => {
+	if(idInterval) {
 		clearInterval(idInterval);
 		idInterval = undefined;
-
-	document.getElementById("icone-pause").hidden = true;
-	document.getElementById("icone-lancer").hidden = false;
+		
+		document.getElementById("icone-pause").hidden = true;
+		document.getElementById("icone-lancer").hidden = false;
 	}
-);
+	
+	else {
+		document.getElementById("icone-lancer").hidden = true;
+		document.getElementById("icone-pause").hidden = false;
+		
+		lancer_animation();
+	}
+});
 
 document.getElementById("vitesse").addEventListener(
 	"input",
@@ -466,5 +450,5 @@ document.getElementById("opacite-image").dispatchEvent(new InputEvent("input"));
  *
  */
 
-let derniereHeure = Array.from(document.getElementsByClassName("heure")).at(-1);
-derniereHeure.dispatchEvent(new MouseEvent("mouseover"));
+selectionHeure.selectedIndex = selectionHeure.length - 1;
+selectionHeure.dispatchEvent(new Event("change"));

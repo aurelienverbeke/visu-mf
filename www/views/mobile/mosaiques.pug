@@ -1,24 +1,25 @@
 extends layout
 
 block content
-	div(class="container-fluid")
+	div(class="ps-2 pe-2 pb-3", id="page")
 		div(class="mb-3 map-mosa", id="map")
 		div(id="popup", class="popup-map-mosa")
 			a(href="#", id="fermeture-popup")
 			p(id="nom-radar-popup", class="mb-0")
-		div(class="row align-items-start mb-3" id="boutons-animation")
+	div(class="ps-3 pe-3 mb-3")
+		div(class="row align-items-start" id="boutons-animation")
 			div(class="col-2 pe-0" align="center")
-				button(type="button", class="btn btn-outline-primary", id="bouton-lancer")
+				button(type="button", class="btn btn-outline-primary sans-hover", data-bs-toggle="modal", data-bs-target="#popup-config")
 					i(class="bi bi-gear")
 			div(class="col-8", align="center")
 				select(class="form-select text-bg-secondary text-center fw-bold mb-0 ps-2 pe-2" id="selection-heure")
 					each heure in heures
 						if heures_dispo.includes(heure[0])
-							option(value=heure[0], class="heure heure-dispo")= heure[1]
+							option(value=heure[0], class="heure heure-dispo", id=heure[0])= heure[1]
 						else
-							option(value=heure[0], class="heure heure-non-dispo") #{heure[1]} &#8226
+							option(value=heure[0], class="heure heure-non-dispo", id=heure[0]) #{heure[1]} &#8226
 			div(class="col-2 ps-0" align="center")
-				button(type="button", class="btn btn-outline-primary", id="bouton-lancer")
+				button(type="button", class="btn btn-outline-primary sans-hover", id="bouton-lancer")
 					i(class="bi bi-play", id="icone-lancer")
 					i(class="bi bi-pause", id="icone-pause", hidden)
 		
@@ -76,49 +77,56 @@ block content
 
 
 	div(class="modal fade" id="popup-config" tabindex="-1")
-		div(class="modal-dialog")
+		div(class="modal-dialog modal-dialog-centered")
 			div(class="modal-content")
 				div(class="modal-header")
 					h1(class="modal-title fs-5") Configuration
 					button(type="button" class="btn-close" data-bs-dismiss="modal")
 				div(class="modal-body")
 					div(class="list-group" id="liste-couches")
-						div(class="list-group-item d-flex align-items-center pe-0" id="couche-fond-carte")
-							div
+						div(class="list-group-item d-flex align-items-center pe-2" id="couche-fond-carte")
+							div(class="flex-grow-1")
 								p(class="mb-0 fw-medium") Fond de carte
 								div(class="d-flex align-items-center")
-									p(class="mb-0 pe-3") Opacité&nbsp;:
+									p(class="mb-0 pe-3") Opacit&eacute;&nbsp;:
 									input(type="range", class="form-range", min="0" max="1", step="0.1", value="0.8", id="opacite-fond-carte")
 							div
 								i(class="bi bi-grip-vertical fs-2 ms-3 poignee-couches")
-						div(class="list-group-item d-flex align-items-center pe-0", id="couche-radars")
-							div
+						div(class="list-group-item d-flex align-items-center pe-2", id="couche-radars")
+							div(class="flex-grow-1")
 								p(class="mb-0 fw-medium") Radars
 								div(class="d-flex align-items-center")
-									p(class="mb-0 pe-3") Opacité&nbsp;:
+									p(class="mb-0 pe-3") Opacit&eacute;&nbsp;:
 									input(type="range", class="form-range", min="0" max="1", step="0.1", value="1", id="opacite-radars")
 							div
 								i(class="bi bi-grip-vertical fs-2 ms-3 poignee-couches")
-						div(class="list-group-item d-flex align-items-center pe-0", id="couche-image")
-							div
+						div(class="list-group-item d-flex align-items-center pe-2", id="couche-image")
+							div(class="flex-grow-1")
 								p(class="mb-0 fw-medium") Image
 								div(class="d-flex align-items-center")
-									p(class="mb-0 pe-3") Opacité&nbsp;:
+									p(class="mb-0 pe-3") Opacit&eacute;&nbsp;:
 									input(type="range", class="form-range", min="0" max="1", step="0.1", value="0.7", id="opacite-image")
 							div
 								i(class="bi bi-grip-vertical fs-2 ms-3 poignee-couches")
-					div(class="row align-items-start" hidden)
-						div(class="col")
-							select(class="form-select form-select-sm", id="selection-debut")
-								option(selected value=heures[0][0])= heures[0][1]
-								each heure in heures.slice(1)
-									option(value=heure[0])= heure[1]
-						div(class="col-1")
-						div(class="col")
-							select(class="form-select form-select-sm", id="selection-fin")
-								each heure in heures.slice(0, -1)
-									option(value=heure[0])= heure[1]
-								option(selected value=heures.at(-1)[0])= heures.at(-1)[1]
+					div(class="list-group mt-3")
+						div(class="list-group-item d-flex align-items-center")
+							p(class="fw-medium mb-0 pe-3") Vitesse&nbsp;:
+							input(type="range", class="form-range", min="1" max="5", step="1", value="1", id="vitesse")
+					div(class="list-group mt-3")
+						div(class="list-group-item")
+							p(class="mb-0 fw-medium") Animation&nbsp;:
+							div(class="d-flex align-items-center mb-2")
+								p(class="mb-0") D&eacute;but&nbsp;:
+								select(class="form-select form-select-sm ms-2", id="selection-debut")
+									option(selected value=heures[0][0])= heures[0][1]
+									each heure in heures.slice(1)
+										option(value=heure[0])= heure[1]
+							div(class="d-flex align-items-center")
+								p(class="mb-0") Fin&nbsp;:
+								select(class="form-select form-select-sm ms-2", id="selection-fin")
+									each heure in heures.slice(0, -1)
+										option(value=heure[0])= heure[1]
+									option(selected value=heures.at(-1)[0])= heures.at(-1)[1]
 	
 	
 

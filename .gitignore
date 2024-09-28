@@ -4,5 +4,7 @@ bin/
 *.swp
 *.sha256
 bundle_mosa.js
+bundle_mosa_mobile.js
 bundle_obs.js
 radars_presents.json
+logs.txt

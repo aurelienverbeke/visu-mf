@@ -11,7 +11,12 @@ const fs = require("fs");
 
 
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Visu-MF' });
+	if(req.useragent["isMobile"])
+		var page = "mobile/index";
+	else
+		var page = "index"
+
+	res.render(page, { title: 'Visu-MF' });
 });
 
 
@@ -39,8 +44,15 @@ router.get("/metadonnees-radar",
 router.get("/nsmt-40",
 	(req, res) => {
 		fetch("http://www.meteo.fr/extranets-alim/BULLETINS/Special/etat_radar.txt")
-			.then((res) => res.text())
-			.then((text) => res.render("texte", { title: "NSMT-40", texte: text.replaceAll(/(?:\r\n|\r|\n)/g, '<br>') }));
+			.then((resText) => resText.text())
+			.then((text) => {
+				if(req.useragent["isMobile"])
+					var page = "mobile/texte";
+				else
+					var page = "texte"
+
+				res.render(page, { title: "NSMT-40", texte: text.replaceAll(/(?:\r\n|\r|\n)/g, '<br>') });
+			});
 	}
 );
 

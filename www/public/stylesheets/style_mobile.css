@@ -1,6 +1,8 @@
 body {
 	padding: 0px;
 	height: 100%;
+	display: flex;
+	flex-flow: column;
 }
 
 html {
@@ -11,12 +13,16 @@ html {
 
 
 
-.map-mosa {
-	width: 100%;
-	height: 80vh;
+#page {
+	height: 100%;
 }
 
 
+
+.map-mosa {
+	width: 100%;
+	height: 100%;
+}
 
 
 
@@ -72,16 +78,25 @@ html {
 
 
 
-
-
 #selection-heure {
 	background-image: none;
 }
 
 #boutons-animation {
-	position: fixed;
-	bottom: 0;
-	width: 100%;
+	height: 10%;
+}
+
+.btn:hover {
+	color: var(--bs-btn-color);
+	background-color: var(--bs-btn-bg);
+}
+
+
+
+
+
+.conteneur-texte {
+	overflow-y: scroll;
 }
 
 
